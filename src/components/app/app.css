@@ -1,0 +1,19 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  width: 1010px;
+  margin: 0 auto;
+  padding: 13px 32px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+.pagination {
+  margin: 32px auto;
+}
+.ant-rate-star {
+ width: 12px;
+}

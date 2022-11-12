@@ -1,0 +1,45 @@
+.item {
+  width: calc(910px/2);
+  padding: 0.5rem;
+  border:1px solid purple;
+  display: flex;
+  gap:9px;
+}
+.item img{
+  width: 40%;
+  align-self: flex-start;
+}
+.item-props {
+  display: flex;
+  flex-direction: column;
+  gap:9px;
+  position: relative;
+}
+.average {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 9px;
+  top:12px;
+  border: 2px solid orange;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 22px;
+  font-size: 12px;
+}
+.item-props h4 {
+  width: 80%;
+  margin:0;
+  font-size: 20px;
+  line-height: 28px;
+}
+.overview {
+  height: 130px;
+  overflow: hidden;
+  font-size: 12px;
+  line-height:22px
+}
+.rate {
+  width: 90%;
+  margin: 0 auto;
+}
