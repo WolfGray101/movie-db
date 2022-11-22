@@ -7,8 +7,8 @@ import { Consumer } from '../../services/service-context';
 
 function Item(props) {
   
-
-  const {posterPath, changeRate, genresItem, ...itemProps} = props
+  const _apiBase = 'https://image.tmdb.org/t/p/original/';
+  const {posterPath, changeRate, genresItem, genresBlock, ...itemProps} = props
   
   const   cutText = (text) => {
     let cut = text.slice(0, 80);
@@ -16,17 +16,7 @@ function Item(props) {
     cut = text.slice(0, cutInd)
     return `${cut} ...`
   }
-  const genresBlock =  (genresIds) => {
-    if (genresItem.length === 0) return 'No genres name'
-    const namesGanr = genresItem.map((id) => {
-      const resFilter = genresIds.filter(el => el.id === id)
-      const resGanreName = resFilter.length > 0 ? resFilter[0].name : (resFilter.name = 'no data')
-   
-      return <span className = 'genres__el' key={itemProps.id}> {resGanreName} </span>
-    })
-    return namesGanr
-  }
-  const _apiBase = 'https://image.tmdb.org/t/p/original/';
+  
   let color = 'color3'
   const avg = itemProps.voteAverage
   if (avg<3 && avg<=5) color = 'color5';
@@ -37,7 +27,9 @@ function Item(props) {
   return (
     <div className="item">      
       <img src={poster} alt = 'poster name' />
+      
       <div className='item-props'>
+       
         <h4>{itemProps.originalTitle}</h4>
           
         <span>{itemProps.releaseDate}</span> 
@@ -45,18 +37,21 @@ function Item(props) {
         <span className='genres'> 
           <Consumer>
             {
-              (genresIds) => genresBlock(genresIds)
+              (genresIds) => props.genresBlock(genresIds, genresItem)
             }
           </Consumer>
         </span>
-        <div className='overview'>{cutText(itemProps.overview)}</div>  
+        
+        <div className='overview'>{ cutText(itemProps.overview) }</div>  
+        
         <div className={`average ${color}`}>
           <span>{itemProps.voteAverage}</span>
         </div> 
+       
         <Rate  count={10} allowHalf 
-          onChange = {(value) => changeRate(value) }
-         
-          defaultValue={0} className="rate"/>   
+          onChange = {(value) => changeRate(value) }         
+          defaultValue={0} className="rate"
+        />   
       </div>  
     </div> 
   );

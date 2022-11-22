@@ -33,7 +33,7 @@ export default class  App extends Component {
     this.onGetGenres()
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(_, prevState) {
     const { query, currentPage } = this.state
     if (prevState.query !== query || prevState.currentPage !== currentPage) {
       this.onFilmList()
@@ -116,7 +116,10 @@ export default class  App extends Component {
   onToggle = (e) => {
     const active  = e.target.id
     if ( active === 'search') {
-      this.onFilmList()      
+      this.onFilmList()
+      this.setState({
+        query:'return'
+      })      
     }
     if ( active === 'rated') {
       this.onGetRatedMoves()
@@ -126,12 +129,28 @@ export default class  App extends Component {
     })
   }
 
+  genresBlock =  (genresIds,genresItem ) => {
+    if (genresItem.length === 0) return 'No genres name'
+    const namesGanr = genresItem.map((id) => {
+      const resFilter = genresIds.filter(el => el.id === id)
+      const resGanreName = resFilter.length > 0 ? 
+        resFilter[0].name : (resFilter.name = 'no data')
+   
+      return <span className = 'genres__el' key={id}> {resGanreName} </span>
+    })
+    return namesGanr
+  }
+
   render() {
-    const {films, loading, error, totalPages, currentPage, genresIds, activeBtn} = this.state
+    const {films, loading, error, totalPages, currentPage, 
+      genresIds, activeBtn} = this.state
     
     const hasData = !(loading || error)
     const spinner = loading ?  <SpinnerMessage/>  : null;
     const errorMessage = error?  <ErrorMessage />:null;
+    const search = activeBtn !== 'rated' ? <Search       
+      onLabelChange = {(value) => this.onLabelChange(value)} 
+    />:null  
     const content = hasData ? <ContentView  
       films = {films}
       activeBtn = {activeBtn}
@@ -140,7 +159,8 @@ export default class  App extends Component {
       currentPage= {currentPage}
       totalPages = {totalPages} 
       onPageChange= {this.onPageChange} 
-      onLabelChange = {(value) => this.onLabelChange(value)}  /> : null;
+      genresBlock = {this.genresBlock}
+    /> : null;
     
     return (
     
@@ -149,6 +169,7 @@ export default class  App extends Component {
           <Filter 
             activeBtn= {this.state.activeBtn}
             onToggle = {this.onToggle}/>
+          {search} 
           {errorMessage}     
           {spinner}
           {content}
@@ -181,7 +202,7 @@ function SpinnerMessage() {
   return (
     <Spin tip="Loading..."> 
       <Alert
-        message="Wait a few 123 momements"
+        message="Wait a few momements"
         description="Loading in progress"
         type="info"
       />
@@ -189,28 +210,27 @@ function SpinnerMessage() {
   )
 }
 
-function ContentView({ films, currentPage,
-  changeRate, onPageChange, onLabelChange, 
-  totalPages, genresIds, activeBtn }) {
+function ContentView({ 
+  films, currentPage,
+  changeRate, onPageChange,
+  totalPages, genresIds, genresBlock  }) {
 
   const emptySearch = films.length===0? 
     <Alert
       message="Not found"   description="Check your request"
       type="info" />  
     :null
-  const search = activeBtn !== 'rated' ? <Search       
-    onLabelChange = {onLabelChange} 
-  />:null  
-    
+ 
   return (
     <>
-      {search}
-      {emptySearch}
-        
+     
+      {emptySearch}     
+
       <Provider value= {genresIds}>
         <ItemList  
           films = {films}
           changeRate = {changeRate}
+          genresBlock={genresBlock}
         />
       </Provider>
 

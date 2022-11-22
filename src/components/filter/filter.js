@@ -2,8 +2,6 @@ import React from 'react';
 
 import  './filter.css'
 
-
-
 function Filter (props) { 
 
   const clazz = props.activeBtn === 'search' ? 'active' : ''
@@ -16,8 +14,7 @@ function Filter (props) {
       <button  id = 'rated' type="button" className={`filter-button__button ${clazzz}`} 
         onClick={e => props.onToggle(e)}>Rated</button>
     </div>
-  )
-  
+  )   
 }
 
 export default Filter;
