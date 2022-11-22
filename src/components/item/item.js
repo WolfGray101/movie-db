@@ -49,8 +49,9 @@ function Item(props) {
         </div> 
        
         <Rate  count={10} allowHalf 
+          defaultValue={itemProps.rating}
           onChange = {(value) => changeRate(value) }         
-          defaultValue={0} className="rate"
+          className="rate"
         />   
       </div>  
     </div> 

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Pagination, Alert, Spin } from 'antd';
+import { Pagination, Alert} from 'antd';
 import { Offline, Online } from 'react-detect-offline';
 
 import Filter from '../filter'
 import Search from '../search'
 import ItemList from '../itemList'
+import Spinner from '../spinner'
+import Error from '../error'
 
 import ServiceFile from  '../../services/service-file'
 import { Provider } from '../../services/service-context';
@@ -59,9 +61,9 @@ export default class  App extends Component {
   }  
 
   onGetRatedMoves = () => {
-    const idKey = localStorage.getItem('sessionId')
+    const sessionId = localStorage.getItem('sessionId')
     this.serviceFile
-      .getRatedMoves(idKey)
+      .getRatedMoves(sessionId)
       .then(this.onFilmListItem)
       .catch(this.onError)
   }
@@ -111,8 +113,7 @@ export default class  App extends Component {
     this.serviceFile
       .setRateMovie(value, id, sessionId)
   }
-
-
+  
   onToggle = (e) => {
     const active  = e.target.id
     if ( active === 'search') {
@@ -130,12 +131,9 @@ export default class  App extends Component {
   }
 
   genresBlock =  (genresIds,genresItem ) => {
-    if (genresItem.length === 0) return 'No genres name'
     const namesGanr = genresItem.map((id) => {
       const resFilter = genresIds.filter(el => el.id === id)
-      const resGanreName = resFilter.length > 0 ? 
-        resFilter[0].name : (resFilter.name = 'no data')
-   
+      const resGanreName = resFilter.length > 0 ? resFilter[0].name : (resFilter.name = 'no data')
       return <span className = 'genres__el' key={id}> {resGanreName} </span>
     })
     return namesGanr
@@ -146,11 +144,9 @@ export default class  App extends Component {
       genresIds, activeBtn} = this.state
     
     const hasData = !(loading || error)
-    const spinner = loading ?  <SpinnerMessage/>  : null;
-    const errorMessage = error?  <ErrorMessage />:null;
-    const search = activeBtn !== 'rated' ? <Search       
-      onLabelChange = {(value) => this.onLabelChange(value)} 
-    />:null  
+    const spinner = loading ?  <Spinner/>  : null;
+    const errorMessage = error?  <Error />:null;
+    const search = activeBtn === 'search' ? <Search onLabelChange = {(value) => this.onLabelChange(value)} />:null  
     const content = hasData ? <ContentView  
       films = {films}
       activeBtn = {activeBtn}
@@ -187,29 +183,6 @@ export default class  App extends Component {
 }
 
 
-function ErrorMessage() {
-  return (
-    <Alert
-      message="Error"
-      description="Something went wrong."
-      type="error"
-      showIcon
-    />
-  )
-}
-
-function SpinnerMessage() {
-  return (
-    <Spin tip="Loading..."> 
-      <Alert
-        message="Wait a few momements"
-        description="Loading in progress"
-        type="info"
-      />
-    </Spin> 
-  )
-}
-
 function ContentView({ 
   films, currentPage,
   changeRate, onPageChange,
@@ -234,14 +207,15 @@ function ContentView({
         />
       </Provider>
 
-      <Pagination size="default" 
+      <Pagination 
         current={currentPage} 
         total={totalPages}  
-        showSizeChanger= {false}
-        defaultPageSize={[20]}  
-        pageSizeOptions ={[20]} 
         onChange={onPageChange} 
         className='pagination'
+        size="default" 
+        showSizeChanger= {false}
+        defaultPageSize={[20]}  
+        pageSizeOptions ={[20]}         
       />
     </>
   );

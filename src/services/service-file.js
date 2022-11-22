@@ -45,8 +45,8 @@ export default class SwapiService {
     return sessionID.guest_session_id
   }
 
-  getRatedMoves = async (idKey) => {
-    const resGetFilmList =   await this.getResource(`guest_session/${idKey}/rated/movies?api_key=${this._apiKey}`);
+  getRatedMoves = async (sessionId) => {
+    const resGetFilmList =   await this.getResource(`guest_session/${sessionId}/rated/movies?api_key=${this._apiKey}`);
     return this._transformResult(resGetFilmList)
   }
 
@@ -75,7 +75,8 @@ export default class SwapiService {
       originalTitle: film.original_title,
       voteAverage: +film.vote_average.toFixed(1),
       releaseDate: film.release_date,
-      genresItem: film.genre_ids
+      genresItem: film.genre_ids,
+      rating: film.rating
     };
   }
 
