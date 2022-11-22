@@ -13,8 +13,8 @@ function Item(props) {
     if (genresItem.length === 0) return 'No genres name'
     const namesGanr = genresItem.map((id) => {
       const resFilter = genresIds.filter(el => el.id === id)
-      const resGanreName = resFilter[0].name
-    
+      const resGanreName = resFilter.length > 0 ? resFilter[0].name : (resFilter.name = 'no data')
+   
       return <span className = 'genres__el' key={itemProps.id}> {resGanreName} </span>
     })
     return namesGanr
@@ -25,7 +25,7 @@ function Item(props) {
   if (avg<3 && avg<=5) color = 'color5';
   if (avg<5 && avg<=7) color = 'color7'
   if (avg<7 ) color = 'color10'
-  let poster = `${_apiBase}${posterPath}`
+  let poster = `${_apiBase}${posterPath}` 
   if (!posterPath) poster = posterr
   return (
     <div className="item">      
