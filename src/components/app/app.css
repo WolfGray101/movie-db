@@ -10,10 +10,32 @@
   display: flex;
   flex-direction: column;
   align-content: center;
+  row-gap: 16px;
 }
 .pagination {
   margin: 32px auto;
+ text-align: center;
 }
 .ant-rate-star {
  width: 12px;
+}
+
+@media (max-width: 1010px) {
+  .container {
+    margin: 0 auto;
+    width: 450px;
+  }
+  .container {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    width: 388px;
+    padding: 16px;
+  }
+  .container {
+    row-gap: 20px !important;
+  }
 }

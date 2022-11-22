@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { Pagination, Alert, Spin } from 'antd';
 import { Offline, Online } from 'react-detect-offline';
-import Header from '../header'
+
+import Filter from '../filter'
+import Search from '../search'
 import ItemList from '../itemList'
+
 import ServiceFile from  '../../services/service-file'
 import { Provider } from '../../services/service-context';
 
@@ -20,7 +23,8 @@ export default class  App extends Component {
     totalPages:null,
     query:'return',
     currentPage:1,
-    genresIds: []
+    genresIds: [],
+    activeBtn: 'search'
   }
 
   componentDidMount() {
@@ -36,6 +40,13 @@ export default class  App extends Component {
     }
   }
 
+  onSessionCreate = () => {
+    this.serviceFile
+      .getSessinID()
+      .then(idKey => localStorage.setItem('sessionId', idKey))
+      .catch(this.onError)  
+  }
+
   onGetGenres = () => {
     this.serviceFile
       .getGenres()
@@ -45,20 +56,14 @@ export default class  App extends Component {
         })
       })
       .catch(this.onError)  
-  }
-
-  onSessionCreate = () => {
-    this.serviceFile
-      .getSessinID()
-      .then(idKey => localStorage.setItem('sessionId', idKey))
-      .catch(this.onError)  
-  }
+  }  
 
   onGetRatedMoves = () => {
     const idKey = localStorage.getItem('sessionId')
     this.serviceFile
       .getRatedMoves(idKey)
       .then(this.onFilmListItem)
+      .catch(this.onError)
   }
 
   onFilmList = () => {
@@ -82,12 +87,15 @@ export default class  App extends Component {
   onLabelChange = (value) => {
     this.setState({
       query: value,
-      currentPage:1
+      currentPage:1,
+      loading: true
     })
   }
 
   onPageChange = (page) => {
-    this.setState({ currentPage: page })
+    this.setState({ 
+      currentPage: page, 
+      loading:true })
   }
  
   onError = (error) => {
@@ -104,26 +112,43 @@ export default class  App extends Component {
       .setRateMovie(value, id, sessionId)
   }
 
+
+  onToggle = (e) => {
+    const active  = e.target.id
+    if ( active === 'search') {
+      this.onFilmList()      
+    }
+    if ( active === 'rated') {
+      this.onGetRatedMoves()
+    }
+    this.setState({
+      activeBtn:active
+    })
+  }
+
   render() {
-    const {films, loading, error, totalPages, currentPage, genresIds} = this.state
+    const {films, loading, error, totalPages, currentPage, genresIds, activeBtn} = this.state
     
     const hasData = !(loading || error)
     const spinner = loading ?  <SpinnerMessage/>  : null;
     const errorMessage = error?  <ErrorMessage />:null;
     const content = hasData ? <ContentView  
       films = {films}
+      activeBtn = {activeBtn}
       genresIds = {genresIds}
-      getSearch = {this.onFilmList}
-      getRated = {this.onGetRatedMoves}
       changeRate = {this.changeRate}
       currentPage= {currentPage}
       totalPages = {totalPages} 
       onPageChange= {this.onPageChange} 
-      onLabelChange = {this.onLabelChange}  /> : null;
+      onLabelChange = {(value) => this.onLabelChange(value)}  /> : null;
+    
     return (
     
       <div className="container">
         <Online>
+          <Filter 
+            activeBtn= {this.state.activeBtn}
+            onToggle = {this.onToggle}/>
           {errorMessage}     
           {spinner}
           {content}
@@ -166,24 +191,29 @@ function SpinnerMessage() {
 
 function ContentView({ films, currentPage,
   changeRate, onPageChange, onLabelChange, 
-  totalPages, getRated, getSearch, genresIds }) {
-  const emptySearch = films.length===0? <Alert
-    message="Not found"   description="Check your request"
-    type="info" />  :null
+  totalPages, genresIds, activeBtn }) {
+
+  const emptySearch = films.length===0? 
+    <Alert
+      message="Not found"   description="Check your request"
+      type="info" />  
+    :null
+  const search = activeBtn !== 'rated' ? <Search       
+    onLabelChange = {onLabelChange} 
+  />:null  
+    
   return (
     <>
-      <Header 
-        getSearch= {getSearch}
-        getRated = {getRated}
-        onLabelChange = {onLabelChange}/>
+      {search}
       {emptySearch}
         
       <Provider value= {genresIds}>
         <ItemList  
           films = {films}
-          changeRate = {changeRate}/>
+          changeRate = {changeRate}
+        />
       </Provider>
-       
+
       <Pagination size="default" 
         current={currentPage} 
         total={totalPages}  
@@ -191,7 +221,8 @@ function ContentView({ films, currentPage,
         defaultPageSize={[20]}  
         pageSizeOptions ={[20]} 
         onChange={onPageChange} 
-        className='pagination'/>
+        className='pagination'
+      />
     </>
   );
 }

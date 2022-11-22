@@ -79,6 +79,13 @@ export default class SwapiService {
     };
   }
 
+  cutText = (text) => {
+    let cut = text.slice(0, 100);
+    const cutInd = cut.lastIndexOf(' ');
+    cut = text.slice(0, cutInd)
+    return `${cut} ...`
+  }
+  
 }
 
 // RateStars.propTypes = {

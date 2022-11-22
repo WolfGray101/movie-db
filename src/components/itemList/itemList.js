@@ -8,8 +8,8 @@ import './itemList.css';
 function ItemList({films, changeRate}) {
   const elements = films.map((item) => {
     const {id, ...itemProps } = item
-    return (
-      
+    
+    return (      
       <Item key ={id} 
         changeRate= {(value) => changeRate(value, id)}      
         // eslint-disable-next-line react/jsx-props-no-spreading

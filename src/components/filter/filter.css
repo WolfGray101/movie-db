@@ -2,15 +2,17 @@
     display: flex;
     justify-content: center;
     gap: 16px;
+    font-size: 32px;
   }
 
   .filter-button__button {
     background: none;
     border: none;
-    padding: .5rem;
+    padding: .2rem;
     line-height: 22px;
     font-size: 14px;
-    color:rgba(0, 0, 0, 0.65)
+    color:rgba(0, 0, 0, 0.65);
+    margin: 0.2em 0 0.5em
   }
 .active {    
     border-bottom: 3px solid;

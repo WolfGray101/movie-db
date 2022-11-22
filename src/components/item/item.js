@@ -6,9 +6,16 @@ import posterr from './noimage.jpeg'
 import { Consumer } from '../../services/service-context';
 
 function Item(props) {
+  
 
   const {posterPath, changeRate, genresItem, ...itemProps} = props
   
+  const   cutText = (text) => {
+    let cut = text.slice(0, 80);
+    const cutInd = cut.lastIndexOf(' ');
+    cut = text.slice(0, cutInd)
+    return `${cut} ...`
+  }
   const genresBlock =  (genresIds) => {
     if (genresItem.length === 0) return 'No genres name'
     const namesGanr = genresItem.map((id) => {
@@ -42,8 +49,10 @@ function Item(props) {
             }
           </Consumer>
         </span>
-        <div className='overview'>{itemProps.overview}</div>  
-        <div className={`average ${color}`}>{itemProps.voteAverage}</div> 
+        <div className='overview'>{cutText(itemProps.overview)}</div>  
+        <div className={`average ${color}`}>
+          <span>{itemProps.voteAverage}</span>
+        </div> 
         <Rate  count={10} allowHalf 
           onChange = {(value) => changeRate(value) }
          

@@ -13,8 +13,9 @@ function Search ({onLabelChange}) {
 
   return (
     <Input  className="input"
+      type='text'
       placeholder="Type to search"
-      onChange={debounce(inputValue, 500)}
+      onChange={debounce(inputValue, 1000)}
     />
   );
 }
