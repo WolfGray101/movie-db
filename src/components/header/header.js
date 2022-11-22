@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Filter from '../filter'
 import Search from '../search'
@@ -7,15 +7,14 @@ import './header.css';
 
 
 
-export default class Header extends Component {
-  
-  render () {
-  return (
+function  Header ({onLabelChange, getRated, getSearch}) { 
+  return (      
     <div className="header">
-      <Filter />
-      <Search />
+      <Filter getRated = {getRated}
+        getSearch = {getSearch}/>
+      <Search onLabelChange = {(value) => onLabelChange(value)} />
     </div>
   );
-}
-}
+} 
 
+export default Header
